@@ -125,8 +125,20 @@ public class AddressBook {
                 return;
             }
         }
-        System.out.println("Contact with the given name not found.");
+        System.out.println("Contact with the given name was not found.");
     }
+
+    public void deleteContactByName(String name) {
+        for (int i = 0; i < contacts.size(); i++) {
+            if (contacts.get(i).firstName.equalsIgnoreCase(name)) {
+                contacts.remove(i);
+                System.out.println("Contact deleted successfully!");
+                return;
+            }
+        }
+        System.out.println("Contact with the given name was not found.");
+    }
+
 
     public static void main(String[] args) {
         Scanner scanner=new Scanner(System.in);
@@ -134,7 +146,7 @@ public class AddressBook {
         AddressBook book = new AddressBook();
 
         while (true) {
-            System.out.println("\nMenu:\n1. Add Contact\n2. Display Contacts\n3. Edit Contact\n4. Exit");
+            System.out.println("\nMenu:\n1. Add Contact\n2. Display Contacts\n3. Edit Contact\n4. Delete Contact\n5. Exit");
             System.out.print("Enter choice: ");
             int choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
@@ -150,6 +162,11 @@ public class AddressBook {
                     book.editContactByName(name);
                     break;
                 case 4:
+                    System.out.print("Enter First Name of Contact to Delete: ");
+                    String nameToDelete = scanner.nextLine();
+                    book.deleteContactByName(nameToDelete);
+                    break;
+                case 5:
                     System.out.println("Exiting program.");
                     return;
                 default:

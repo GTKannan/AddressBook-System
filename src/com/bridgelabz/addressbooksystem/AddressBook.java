@@ -1,5 +1,6 @@
 package com.bridgelabz.addressbooksystem;
 
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -42,6 +43,7 @@ class ContactPerson {
 public class AddressBook {
 
     ArrayList<ContactPerson> contacts = new ArrayList<>();
+
     // Method to take input from user
     public void createContact() {
         Scanner scanner = new Scanner(System.in);
@@ -62,7 +64,7 @@ public class AddressBook {
         String state = scanner.nextLine();
 
         System.out.print("Enter Email: ");
-        String email= scanner.nextLine();
+        String email = scanner.nextLine();
 
         System.out.print("Enter Phone Number: ");
         long phoneNumber = scanner.nextLong();
@@ -92,7 +94,7 @@ public class AddressBook {
     }
 
     public void editContactByName(String name) {
-        Scanner scanner= new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         for (ContactPerson contact : contacts) {
             if (contact.firstName.equalsIgnoreCase(name)) {
                 System.out.println("Contact found. Enter new details:");
@@ -141,41 +143,90 @@ public class AddressBook {
 
 
     public static void main(String[] args) {
-        Scanner scanner=new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
+        HashMap<String, AddressBook> addressBookMap = new HashMap<>();
         System.out.println("Welcome to Address Book Program");
-        AddressBook book = new AddressBook();
 
         while (true) {
-            System.out.println("\nMenu:\n1. Add Contact\n2. Display Contacts\n3. Edit Contact\n4. Delete Contact\n5. Exit");
-            System.out.print("Enter choice: ");
-            int choice = Integer.parseInt(scanner.nextLine());
-            switch (choice) {
+            System.out.println("\nMain Menu:\n1. Add New Address Book\n2. Access Existing Address Book\n3. List Address Books\n4. Exit");
+            System.out.print("Enter your choice: ");
+            int mainChoice = Integer.parseInt(scanner.nextLine());
+
+            switch (mainChoice) {
                 case 1:
-                    while (true) {
-                        book.createContact();
-                        System.out.print("Do you want to add another contact? (yes/no): ");
-                        String choiceToContinue = scanner.nextLine();
-                        if (!choiceToContinue.equalsIgnoreCase("yes")) {
-                            break;
+                    System.out.print("Enter unique name for Address Book: ");
+                    String newBookName = scanner.nextLine();
+                    if (addressBookMap.containsKey(newBookName)) {
+                        System.out.println("Address Book with this name already exists.");
+                    } else {
+                        AddressBook newBook = new AddressBook();
+                        addressBookMap.put(newBookName, newBook);
+                        System.out.println("Address Book '" + newBookName + "' created successfully.");
+                    }
+                    break;
+
+                case 2:
+                    System.out.print("Enter Address Book name to access: ");
+                    String bookName = scanner.nextLine();
+                    AddressBook selectedBook = addressBookMap.get(bookName);
+                    if (selectedBook == null) {
+                        System.out.println("No Address Book found with name: " + bookName);
+                    } else {
+                        // Inner loop for managing contacts inside a specific Address Book
+                        while (true) {
+                            System.out.println("\n" + bookName + " Menu:\n1. Add Contact\n2. Display Contacts\n3. Edit Contact\n4. Delete Contact\n5. Back to Main Menu");
+                            System.out.print("Enter your choice: ");
+                            int choice = Integer.parseInt(scanner.nextLine());
+                            switch (choice) {
+                                case 1:
+                                    while (true) {
+                                        selectedBook.createContact();
+                                        System.out.print("Do you want to add another contact? (yes/no): ");
+                                        String choiceToContinue = scanner.nextLine();
+                                        if (!choiceToContinue.equalsIgnoreCase("yes")) {
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                case 2:
+                                    selectedBook.displayContact();
+                                    break;
+                                case 3:
+                                    System.out.print("Enter First Name of Contact to Edit: ");
+                                    String editName = scanner.nextLine();
+                                    selectedBook.editContactByName(editName);
+                                    break;
+                                case 4:
+                                    System.out.print("Enter First Name of Contact to Delete: ");
+                                    String nameToDelete = scanner.nextLine();
+                                    selectedBook.deleteContactByName(nameToDelete);
+                                    break;
+                                case 5:
+                                    System.out.println("Returning to Main Menu...");
+                                    break;
+                                default:
+                                    System.out.println("Invalid choice.");
+                            }
+                            if (choice == 5) break;
                         }
                     }
                     break;
-                case 2:
-                    book.displayContact();
-                    break;
+
                 case 3:
-                    System.out.print("Enter First Name of Contact to Edit: ");
-                    String name = scanner.nextLine();
-                    book.editContactByName(name);
+                    if (addressBookMap.isEmpty()) {
+                        System.out.println("No Address Books created yet.");
+                    } else {
+                        System.out.println("List of Address Books:");
+                        for (String name : addressBookMap.keySet()) {
+                            System.out.println("- " + name);
+                        }
+                    }
                     break;
+
                 case 4:
-                    System.out.print("Enter First Name of Contact to Delete: ");
-                    String nameToDelete = scanner.nextLine();
-                    book.deleteContactByName(nameToDelete);
-                    break;
-                case 5:
-                    System.out.println("Exiting program.");
+                    System.out.println("Exiting Address Book System.");
                     return;
+
                 default:
                     System.out.println("Invalid choice.");
             }

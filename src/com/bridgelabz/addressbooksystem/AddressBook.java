@@ -151,7 +151,14 @@ public class AddressBook {
             int choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
                 case 1:
-                    book.createContact();
+                    while (true) {
+                        book.createContact();
+                        System.out.print("Do you want to add another contact? (yes/no): ");
+                        String choiceToContinue = scanner.nextLine();
+                        if (!choiceToContinue.equalsIgnoreCase("yes")) {
+                            break;
+                        }
+                    }
                     break;
                 case 2:
                     book.displayContact();
